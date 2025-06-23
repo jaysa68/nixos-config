@@ -58,6 +58,11 @@
         "org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
         };
+	"org/gnome/desktop/background" = let
+	  dark-bg = "/home/jaysa/nixos-config/dark-bg.png";
+	in {
+	  picture-uri-dark = "file://${dark-bg}";
+	};
       };
     }
   ];
