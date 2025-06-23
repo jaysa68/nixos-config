@@ -51,6 +51,17 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
+  programs.dconf.profiles.user.databases = [
+    {
+      lockAll = true; # prevents overriding
+      settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+        };
+      };
+    }
+  ];
+
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
@@ -76,8 +87,46 @@
     packages = with pkgs; [
       tree
       kitty
-      neovim
     ];
+  };
+
+  programs.tmux.enable = true;
+
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    configure = {
+      customRC = ''
+        set background=dark
+	colorscheme gruvbox
+      '';
+      packages.myVimPackage = with pkgs.vimPlugins; {
+        start = [ 
+	  gruvbox 
+	  neo-tree-nvim
+	  nvim-web-devicons #neotree optional
+	  nvim-window-picker #neotree optional
+	  plenary-nvim #neotree dependency
+	  nui-nvim #neotree dependency
+	  nvim-treesitter
+	  nvim-treesitter-parsers.yaml
+	  nvim-treesitter-parsers.rust
+	  nvim-treesitter-parsers.python
+	  nvim-treesitter-parsers.puppet
+	  nvim-treesitter-parsers.nix
+	  nvim-treesitter-parsers.javascript
+	  nvim-treesitter-parsers.java
+	  nvim-treesitter-parsers.c
+	  nvim-treesitter-parsers.markdown
+	  nvim-treesitter-parsers.markdown_inline
+	  nvim-treesitter-parsers.markdown_inline
+	  nvim-treesitter-parsers.html
+	  nvim-treesitter-parsers.css
+	];
+      };
+    };
+    viAlias = true;
+    vimAlias = true;
   };
 
   programs.firefox = {
@@ -97,6 +146,7 @@
       OverrideFirstRunPage = "";
       OverridePostUpdatePage = "";
       DontCheckDefaultBrowser = true;
+      DisplayBokmarksToolbar = "newtab";
       ExtensionSettings = {
         #"*".installation_mode = "blocked"; # blocks all addons except the ones specified below
         # uBlock Origin:
@@ -123,6 +173,13 @@
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
           installation_mode = "force_installed";
         };
+	"Google_AI_Overviews_Blocker@zachbarnes.dev" = {
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/hide-google-ai-overviews/latest.xpi";
+          installation_mode = "force_installed";
+	};
+      };
+      Preferences = {
+        "browser.contentblocking.category" = { Value = "strict"; Status = "locked"; };
       };
     };
   };
