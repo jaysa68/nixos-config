@@ -84,13 +84,44 @@
   users.users.jaysa = {
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    shell = pkgs.zsh;
     packages = with pkgs; [
       tree
       kitty
+      kitty-themes
+      lsd
     ];
   };
 
   programs.tmux.enable = true;
+  
+  programs.zsh = {
+    enable = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+    
+    shellAliases = {
+      ls = "lsd";
+      lt = "lsd --tree";
+      update = "sudo nixos-rebuild switch";
+      edit = "nvim ~/nixos-config/configuration.nix";
+    };
+
+    promptInit = ''
+      autoload -Uz vcs_info
+      zstyle ':vcs_info:*' enable git svn
+      zstyle ':vcs_info:git*' formats "- (%b)"
+      precmd() {
+        vcs_info
+      }
+      setopt prompt_subst
+      prompt='%F{yellow}%n@%m%f %F{red}%~%f %F{yellow}>%f ' 
+
+    '';
+    shellInit = "
+      kitten themes --reload-in=all 'Gruvbox Dark'
+    ";
+  };
 
   programs.neovim = {
     enable = true;
@@ -147,6 +178,9 @@
       OverridePostUpdatePage = "";
       DontCheckDefaultBrowser = true;
       DisplayBokmarksToolbar = "newtab";
+      Homepage = {
+        URL = "https://jaysa.net";
+      };
       ExtensionSettings = {
         #"*".installation_mode = "blocked"; # blocks all addons except the ones specified below
         # uBlock Origin:
