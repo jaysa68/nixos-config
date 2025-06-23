@@ -130,6 +130,7 @@
       customRC = ''
         set background=dark
 	colorscheme gruvbox
+	set number
       '';
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [ 
@@ -177,7 +178,7 @@
       OverrideFirstRunPage = "";
       OverridePostUpdatePage = "";
       DontCheckDefaultBrowser = true;
-      DisplayBokmarksToolbar = "newtab";
+      DisplayBookmarksToolbar = "newtab";
       Homepage = {
         URL = "https://jaysa.net";
       };
